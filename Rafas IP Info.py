@@ -12,6 +12,21 @@ init(autoreset=True)
 
 COMMON_PORTS = [80, 443, 21, 22, 23, 25, 110, 143, 465, 993, 995, 3306, 3389, 5900]
 
+def is_any_common_port_open(ip: str, timeout: float = 1.0) -> bool:
+    for port in COMMON_PORTS:
+        try:
+            with socket.create_connection((ip, port), timeout=timeout):
+                return True
+        except (socket.timeout, ConnectionRefusedError, OSError):
+            continue
+    return False
+
+ip = "192.168.1.1"
+if is_any_common_port_open(ip):
+    print(f"{ip} has at least one common port open.")
+else:
+    print(f"{ip} has no common ports open.")
+
 def clear_screen():
     os.system("cls" if os.name == "nt" else "clear")
 
